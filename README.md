@@ -33,6 +33,56 @@ ESP32
 
 Durante a operação normal, a unidade embarcada utiliza alimentação própria. O MPD218 permanece conectado por USB ao computador.
 
+## Quick start
+
+### 1. Firmware do ESP32
+
+Edite as credenciais de Wi‑Fi em `firmware_esp32/src/main.cpp`:
+
+```cpp
+const char* WIFI_SSID = "SEU_WIFI";
+const char* WIFI_PASSWORD = "SUA_SENHA";
+```
+
+Depois abra `firmware_esp32/` no PlatformIO e grave o ESP32. No monitor serial, anote o endereço IP obtido.
+
+### 2. Teste UDP direto
+
+No computador:
+
+```bash
+cd software_pc
+python teste_motor_udp.py
+```
+
+Antes de executar, substitua `ESP32_IP` pelo IP mostrado no monitor serial.
+
+### 3. Instale as dependências MIDI
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+Conecte o MPD218 por USB e confirme as portas:
+
+```bash
+python -c "import mido; print(mido.get_input_names())"
+```
+
+### 4. Execute o controle MIDI
+
+Para reproduzir a estratégia original do protótipo:
+
+```bash
+python mpd_to_wifi.py
+```
+
+Para utilizar o mapeamento refinado identificado durante os ensaios:
+
+```bash
+python mpd_to_wifi_mapeamento_completo.py
+```
+
 ## 3. Componentes principais
 
 ### Controle e comunicação
@@ -142,7 +192,7 @@ velocity = 1   -> PWM = 80
 velocity = 127 -> PWM = 255
 \`\`\`
 
-A documentação do repositório público deve preservar as duas estratégias, identificando a primeira como configuração original do protótipo e a segunda como refinamento experimental obtido durante a validação.
+Este repositório preserva as duas estratégias: a primeira como configuração original do protótipo e a segunda como refinamento experimental obtido durante a validação.
 
 ## 9. Caixa impressa em 3D
 
@@ -155,7 +205,7 @@ O desenvolvimento da geometria contou com apoio do ambiente Cursor durante a ela
 
 As fotografias da montagem final serão adicionadas à documentação posteriormente.
 
-## 10. Estrutura proposta para o repositório público
+## 10. Estrutura do repositório
 
 \`\`\`text
 .
@@ -206,4 +256,4 @@ Esses ensaios têm finalidade técnica. Eles não substituem estudos perceptivos
 
 ## 13. Licença e reutilização
 
-Antes da publicação definitiva, deve ser escolhida uma licença para o código e para os arquivos de hardware/3D. O repositório deve informar claramente as condições de reutilização, modificação e redistribuição.
+Ainda não foi atribuída uma licença explícita a este repositório. Até que isso seja definido, a disponibilização pública do código e dos arquivos não deve ser interpretada como concessão automática de direitos de redistribuição ou uso comercial.
