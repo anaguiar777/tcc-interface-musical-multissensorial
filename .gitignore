@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+ensaio_queda_*/
+ensaio_audio_pwm_*/
+dados_pwm.csv
