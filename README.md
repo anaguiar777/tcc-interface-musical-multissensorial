@@ -4,7 +4,7 @@ Este diretório reúne a documentação necessária para reproduzir o protótipo
 
 ## 1. Objetivo do sistema
 
-O protótipo recebe eventos MIDI produzidos pelo controlador Akai MPD218 e utiliza informações como o instante de acionamento e a \`velocity\` para gerar feedback vibrotátil e visual.
+O protótipo recebe eventos MIDI produzidos pelo controlador Akai MPD218 e utiliza informações como o instante de acionamento e a `velocity` para gerar feedback vibrotátil e visual.
 
 O objetivo **não é reproduzir fisicamente o som do MIDI** por vibração ou luz. A proposta é fornecer representações sensoriais alternativas de aspectos da interação musical, como:
 
@@ -15,7 +15,7 @@ O objetivo **não é reproduzir fisicamente o som do MIDI** por vibração ou lu
 
 ## 2. Arquitetura
 
-\`\`\`text
+```text
 Akai MPD218
      |
      | USB / MIDI
@@ -29,7 +29,7 @@ ESP32
      +---- GPIO 18 / PWM ---- MOSFET ---- Vibracall 1027
      |
      +---- GPIO 21 / PWM ---- resistor --- LED de alto brilho
-\`\`\`
+```
 
 Durante a operação normal, a unidade embarcada utiliza alimentação própria. O MPD218 permanece conectado por USB ao computador.
 
@@ -116,7 +116,7 @@ A saída do conversor deve ser ajustada e verificada com multímetro antes da co
 
 ## 4. Ligações do canal vibrotátil
 
-A topologia utilizada é do tipo \`low-side\`:
+A topologia utilizada é do tipo `low-side`:
 
 1. GPIO 18 do ESP32 → resistor de 220 Ω → gate do IRLZ44N;
 2. resistor de 47 kΩ entre gate e GND;
@@ -144,21 +144,21 @@ O firmware aplica ao LED o mesmo valor PWM utilizado como referência para o can
 A implementação validada utiliza:
 
 - porta UDP: **4210**;
-- comando de acionamento: \`ON,pwm\`;
-- comando de desligamento: \`OFF\`.
+- comando de acionamento: `ON,pwm`;
+- comando de desligamento: `OFF`.
 
 Exemplo:
 
-\`\`\`text
+```text
 ON,180
 OFF
-\`\`\`
+```
 
 O endereço IP do ESP32 depende da rede utilizada e deve ser atualizado no programa executado no computador.
 
 ## 7. MIDI
 
-O software no computador utiliza Python com as bibliotecas \`mido\` e \`python-rtmidi\`.
+O software no computador utiliza Python com as bibliotecas `mido` e `python-rtmidi`.
 
 Mapeamento de notas utilizado no MPD218:
 
@@ -183,14 +183,14 @@ Mapeamento de notas utilizado no MPD218:
 
 ## 8. Mapeamento de velocity para PWM
 
-Durante o desenvolvimento foi utilizada inicialmente uma referência superior de \`velocity = 30\`, com PWM mínimo de 80 e saturação em 255.
+Durante o desenvolvimento foi utilizada inicialmente uma referência superior de `velocity = 30`, com PWM mínimo de 80 e saturação em 255.
 
 Os ensaios posteriores mostraram que esse limite produz saturação precoce para impactos mais intensos. Para a caracterização experimental foi utilizado um mapeamento que distribui toda a faixa MIDI válida entre PWM 80 e 255:
 
-\`\`\`text
+```text
 velocity = 1   -> PWM = 80
 velocity = 127 -> PWM = 255
-\`\`\`
+```
 
 Este repositório preserva as duas estratégias: a primeira como configuração original do protótipo e a segunda como refinamento experimental obtido durante a validação.
 
@@ -198,8 +198,8 @@ Este repositório preserva as duas estratégias: a primeira como configuração 
 
 O circuito foi acondicionado em uma caixa modelada em duas peças:
 
-- \`caixa_corpo.stl\`;
-- \`caixa_tampa.stl\`.
+- `caixa_corpo.stl`;
+- `caixa_tampa.stl`.
 
 O desenvolvimento da geometria contou com apoio do ambiente Cursor durante a elaboração e os ajustes do modelo digital. Os arquivos STL permitem reproduzir o invólucro utilizado no protótipo.
 
@@ -207,27 +207,33 @@ As fotografias da montagem final serão adicionadas à documentação posteriorm
 
 ## 10. Estrutura do repositório
 
-\`\`\`text
+```text
 .
 ├── README.md
 ├── firmware_esp32/
 │   ├── platformio.ini
-│   └── src/
-│       └── main.cpp
+│   └── src/main.cpp
 ├── software_pc/
-│   ├── mpd_visual.py
+│   ├── README.md
+│   ├── requirements.txt
+│   ├── mpd_to_wifi.py
+│   ├── mpd_to_wifi_mapeamento_completo.py
+│   ├── teste_motor_udp.py
 │   └── testes/
 │       ├── teste_queda_controlada.py
 │       └── teste_audio_pwm.py
 ├── hardware/
-│   ├── esquema_conexoes.md
+│   ├── BOM.md
+│   ├── ligacoes.md
+│   ├── alimentacao.md
 │   └── 3d/
 │       ├── caixa_corpo.stl
 │       └── caixa_tampa.stl
 ├── dados_experimentais/
-└── docs/
-    └── fotos/
-\`\`\`
+│   ├── ensaio_queda_resumo.csv
+│   └── ensaio_acustico_resumo.csv
+└── docs/fotos/README.md
+```
 
 ## 11. Sequência recomendada de reprodução
 
@@ -238,7 +244,7 @@ As fotografias da montagem final serão adicionadas à documentação posteriorm
 5. conectar ESP32 à rede Wi-Fi;
 6. confirmar o IP atribuído;
 7. executar o software Python e selecionar a entrada MIDI do MPD218;
-8. testar \`ON,255\` e \`OFF\`;
+8. testar `ON,255` e `OFF`;
 9. confirmar o funcionamento do motor e do LED;
 10. somente depois integrar o conjunto à caixa e à estrutura vestível.
 
@@ -249,8 +255,8 @@ A documentação também inclui os procedimentos utilizados para:
 - teste de estabilidade UDP;
 - ensaio com corpo de 39 g e alturas controladas;
 - filtragem de repiques;
-- caracterização \`velocity → PWM\`;
-- caracterização acústica \`PWM → frequência dominante\`.
+- caracterização `velocity → PWM`;
+- caracterização acústica `PWM → frequência dominante`.
 
 Esses ensaios têm finalidade técnica. Eles não substituem estudos perceptivos com usuários nem medição mecânica da vibração por acelerômetro.
 
